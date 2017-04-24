@@ -1,0 +1,28 @@
+#!/bin/bash
+
+usage() {
+  echo "usage: $0 (up|down) args"
+  exit 1
+}
+
+_command=$1
+shift
+if [ -z "${_command}" ]; then
+  usage
+fi
+
+case "${_command}" in
+  up)
+    docker-compose up "$@"
+    exit $?
+    ;;
+
+  down)
+    docker-compose down -v "$@"
+    exit $?
+    ;;
+
+  *)
+    docker-compose "$@"
+    ;;
+esac

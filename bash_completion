@@ -1,0 +1,90 @@
+__gordonsyme_d() {
+  COMPREPLY=()
+  local cur prev words cword opts
+  _get_comp_words_by_ref -n : cur prev words cword
+
+  local commands="ps logs exec stop"
+
+  local counter=1 command="${prev}"
+  while [ ${counter} -lt ${cword} ]; do
+    case "${words[$counter]}" in
+      stop)
+        command="stop"
+        break
+      ;;
+    esac
+    (( counter++ ))
+  done
+
+  case "${command}" in
+    logs)
+      __docker_complete_container_names
+      return 0
+      ;;
+
+    exec)
+      __docker_complete_container_names
+      return 0
+      ;;
+
+    stop)
+      __docker_complete_container_names
+      return 0
+      ;;
+
+    *)
+    ;;
+  esac
+
+  COMPREPLY=($(compgen -W "${commands}" -- ${cur}))
+  return 0
+}
+complete -F __gordonsyme_d d
+
+__gordonsyme_dc() {
+  COMPREPLY=()
+  local cur prev words cword opts
+  _get_comp_words_by_ref -n : cur prev words cword
+
+  local commands="up down"
+
+  local counter=1 command=''
+  while [ ${counter} -lt ${cword} ]; do
+    case "${words[$counter]}" in
+      up)
+        command="up"
+        break
+      ;;
+      down)
+        command="down"
+        break
+      ;;
+    esac
+    (( counter++ ))
+  done
+
+  case "${command}" in
+    up)
+      local _flags=()
+      if [ "${prev}" == "${command}" ]; then
+        _flags+=( "-d" "--force-recreate" "--build" )
+      fi
+
+      local _services=()
+      if [ -e "./docker-compose.yml" ]; then
+        _services=$(python -c "import yaml; print ' '.join(service for service in yaml.load(open('./docker-compose.yml')).get('services').keys())")
+      fi
+
+      local _complete_options=( "${_flags[@]}" "${_services[@]}" )
+      COMPREPLY=($(compgen -W "${_complete_options[*]}" -- ${cur}))
+      return 0
+    ;;
+
+    *)
+    ;;
+  esac
+
+  COMPREPLY=($(compgen -W "${commands}" -- ${cur}))
+  return 0
+}
+complete -F __gordonsyme_dc dc

@@ -1,0 +1,60 @@
+#!/bin/bash
+
+usage() {
+  echo "usage: $0 (logs|stop|ps) <container>"
+  exit 1
+}
+
+_command=$1
+shift
+if [ -z "${_command}" ]; then
+  usage
+fi
+
+case "${_command}" in
+  ps)
+    docker ps --format "table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}\t{{.Status}}"
+    exit $?
+    ;;
+
+  logs)
+    _container=$1
+    if [ -z "${_container}" ]; then
+      usage
+    fi
+    _tmpfile=$(mktemp "docker-logs.XXXXX")
+    docker logs -f "${_container}" > "${_tmpfile}" 2>&1 &
+    sleep 0.1
+    less +G "${_tmpfile}"; kill %; rm "${_tmpfile}"
+    exit $?
+    ;;
+
+  exec)
+    _container=$1
+    if [ -z "${_container}" ]; then
+      usage
+    fi
+
+    _command=$2
+    if [ -z "${_command}" ]; then
+      _command=/bin/bash
+    fi
+    docker exec -it "${_container}" "${_command}"
+    exit $?
+    ;;
+
+
+  stop)
+    _container=$1
+    if [ -z "${_container}" ]; then
+      usage
+    fi
+    docker stop "$@"
+    docker rm -v "$@"
+    exit $?
+    ;;
+
+  *)
+    docker "$@"
+    ;;
+esac
