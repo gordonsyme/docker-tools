@@ -55,6 +55,6 @@ case "${_command}" in
     ;;
 
   *)
-    docker "$@"
+    docker "${_command}" "$@"
     ;;
 esac

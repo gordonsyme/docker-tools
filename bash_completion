@@ -1,45 +1,4 @@
-__gordonsyme_d() {
-  COMPREPLY=()
-  local cur prev words cword opts
-  _get_comp_words_by_ref -n : cur prev words cword
-
-  local commands="ps logs exec stop"
-
-  local counter=1 command="${prev}"
-  while [ ${counter} -lt ${cword} ]; do
-    case "${words[$counter]}" in
-      stop)
-        command="stop"
-        break
-      ;;
-    esac
-    (( counter++ ))
-  done
-
-  case "${command}" in
-    logs)
-      __docker_complete_container_names
-      return 0
-      ;;
-
-    exec)
-      __docker_complete_container_names
-      return 0
-      ;;
-
-    stop)
-      __docker_complete_container_names
-      return 0
-      ;;
-
-    *)
-    ;;
-  esac
-
-  COMPREPLY=($(compgen -W "${commands}" -- ${cur}))
-  return 0
-}
-complete -F __gordonsyme_d d
+complete -F _docker d
 
 __gordonsyme_dc() {
   COMPREPLY=()
