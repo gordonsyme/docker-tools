@@ -11,9 +11,10 @@ if [ -z "${_command}" ]; then
   usage
 fi
 
+# shellcheck disable=SC1117
 case "${_command}" in
   ps)
-    docker ps --format "table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}\t{{.Status}}"
+    docker ps --format "table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}\t{{.Status}}" "$@"
     exit $?
     ;;
 
@@ -39,7 +40,7 @@ case "${_command}" in
     if [ -z "${_command}" ]; then
       _command=/bin/bash
     fi
-    docker exec -it "${_container}" "${_command}"
+    docker exec -it "${_container}" "${_command}" "$@"
     exit $?
     ;;
 
