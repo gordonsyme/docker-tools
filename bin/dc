@@ -13,16 +13,16 @@ fi
 
 case "${_command}" in
   up)
-    docker-compose up -d "$@"
+    docker compose up -d "$@"
     exit $?
     ;;
 
   down)
-    docker-compose down -v "$@"
+    docker compose down -v "$@"
     exit $?
     ;;
 
   *)
-    docker-compose "${_command}" "$@"
+    docker compose "${_command}" "$@"
     ;;
 esac

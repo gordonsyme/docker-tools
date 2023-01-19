@@ -35,11 +35,14 @@ case "${_command}" in
     if [ -z "${_container}" ]; then
       usage
     fi
+    shift
 
-    _command=$2
+    _command=$1
     if [ -z "${_command}" ]; then
       _command=/bin/bash
     fi
+    shift
+
     docker exec -it "${_container}" "${_command}" "$@"
     exit $?
     ;;
