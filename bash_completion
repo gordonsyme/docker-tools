@@ -31,7 +31,7 @@ __gordonsyme_dc() {
 
       local _services=()
       if [ -e "./docker-compose.yml" ]; then
-        _services=$(python -c "import yaml; print ' '.join(service for service in yaml.load(open('./docker-compose.yml')).get('services').keys())")
+        _services=$(yq -o json '.services | keys' docker-compose.yml | jq -r '.[]' | xargs)
       fi
 
       local _complete_options=( "${_flags[@]}" "${_services[@]}" )
